@@ -121,7 +121,13 @@ def emit_group_shims(
     lines.append("module ccpp_{}_group_shims".format(suite_name.lower()))
     lines.append("  use iso_c_binding")
     lines.append("  implicit none")
-    lines.append("  private")
+    lines.append("")
+
+    # Declare all shim subroutines as public so bind(C) names are exported
+    for group_name in group_names:
+        for phase in phases:
+            symbol = _shim_symbol(suite_name, group_name, phase)
+            lines.append("  public :: {}".format(symbol))
     lines.append("")
     lines.append("contains")
     lines.append("")
