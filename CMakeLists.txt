@@ -13,17 +13,14 @@ target_include_directories(ccpp_mdspan INTERFACE
 target_compile_features(ccpp_mdspan INTERFACE cxx_std_17)
 
 # --- Core C++ framework (always built) ---
-# Source files will be added as implementation proceeds.
-# Planned sources:
-#   src/ccpp_framework_orchestrator.cpp
-#   src/ccpp_bridge.cpp
-#   src/ccpp_suite.cpp
-#   src/ccpp_group.cpp
-#   src/ccpp_pipeline_element.cpp
-#   src/ccpp_constituent_registry.cpp
-#   src/ccpp_contiguous_buffer.cpp
-#   ${CAPGEN_GENERATED_CPP_FILES}
-add_library(ccpp_core STATIC "")
+add_library(ccpp_core STATIC
+    src/ccpp_pipeline_element.cpp
+    src/ccpp_group.cpp
+    src/ccpp_suite.cpp
+    src/ccpp_constituent_registry.cpp
+    src/ccpp_framework_orchestrator.cpp
+    src/ccpp_bridge.cpp
+)
 target_link_libraries(ccpp_core PUBLIC ccpp_mdspan)
 target_include_directories(ccpp_core PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
