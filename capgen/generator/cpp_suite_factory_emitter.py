@@ -66,7 +66,7 @@ def _emit_suite_factory_with_shims(
         lines.append("/// Dispatches to the Fortran group cap for '{}'.".format(group_name))
         lines.append("class {} : public SchemeBase {{".format(class_name))
         lines.append("public:")
-        lines.append("    const std::string& name() const override {{")
+        lines.append("    const std::string& name() const override {")
         lines.append('        static const std::string n = "{}";'.format(group_name))
         lines.append("        return n;")
         lines.append("    }")
@@ -88,9 +88,10 @@ def _emit_suite_factory_with_shims(
             lines.append("        {}(ctx.col_start, ctx.col_end, 1, errmsg, {}, &errflg);".format(
                 symbol, _ERRMSG_LEN))
             lines.append("        if (errflg != 0) {")
-            lines.append("            return SchemeError{errflg, std::string(errmsg)};")
+            lines.append("            SchemeError e; e.code = errflg; e.message = std::string(errmsg);")
+            lines.append("            return e;")
             lines.append("        }")
-            lines.append("        return {};")
+            lines.append("        return SchemeError{};")
             lines.append("    }")
             lines.append("")
 
