@@ -20,7 +20,6 @@ add_library(ccpp_core STATIC
     src/ccpp_constituent_registry.cpp
     src/ccpp_framework_orchestrator.cpp
     src/ccpp_bridge.cpp
-    src/suite_factory_SCM_GFS_v16.cpp
 )
 target_link_libraries(ccpp_core PUBLIC ccpp_mdspan)
 target_include_directories(ccpp_core PUBLIC
