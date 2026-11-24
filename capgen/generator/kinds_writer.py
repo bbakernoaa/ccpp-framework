@@ -220,16 +220,28 @@ def _generate_ccpp_kinds(kind_types: KindMap) -> List[str]:
         '',
     ]
 
-    # Parameter declarations, column-aligned on '='.
+    # Kinds whose public name equals the imported spec name (e.g.
+    # c_int=iso_c_binding:c_int) cannot be declared as a new parameter: the
+    # declaration would shadow the use-associated constant and make its own
+    # initializer self-referential. Re-export those names with a PUBLIC
+    # statement instead; declare parameters only for renamed kinds.
     sorted_kinds = sorted(kind_types.items())
-    max_len = max(len(k) for k, _ in sorted_kinds)
-    for kind_name, (_mod, spec) in sorted_kinds:
-        pad = ' ' * (max_len - len(kind_name))
-        lines.append(
-            '  integer, parameter, public :: {}{} = {}'.format(
-                kind_name, pad, spec
+    reexported = [k for k, (_mod, spec) in sorted_kinds if k == spec]
+    declared = [(k, spec) for k, (_mod, spec) in sorted_kinds if k != spec]
+    if reexported:
+        lines.append('  public :: {}'.format(', '.join(reexported)))
+        lines.append('')
+
+    # Parameter declarations, column-aligned on '='.
+    if declared:
+        max_len = max(len(k) for k, _ in declared)
+        for kind_name, spec in declared:
+            pad = ' ' * (max_len - len(kind_name))
+            lines.append(
+                '  integer, parameter, public :: {}{} = {}'.format(
+                    kind_name, pad, spec
+                )
             )
-        )
 
     lines += [
         '',
